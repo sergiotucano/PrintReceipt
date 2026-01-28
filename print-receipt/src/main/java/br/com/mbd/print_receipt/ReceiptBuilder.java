@@ -47,8 +47,13 @@ public class ReceiptBuilder {
         return this;
     }
 
-    public ReceiptBuilder setDefaultTypeface() {
-        typeface = null;
+    public ReceiptBuilder setBold(Context context) {
+        typeface = Typeface.createFromAsset(context.getAssets(), "fonts/RobotoMono-Bold.ttf");
+        return this;
+    }
+
+    public ReceiptBuilder setDefaultTypeface(Context context) {
+        typeface = Typeface.createFromAsset(context.getAssets(), "fonts/RobotoMono-Regular.ttf");
         return this;
     }
 
@@ -158,16 +163,19 @@ public class ReceiptBuilder {
                 float baseline = centerY - (fm.ascent + fm.descent) / 2f;
 
                 // ✅ 4. CALCULAR O X (Alinhamento Horizontal)
+                float safeMargin = 4f; // Margem mínima de segurança em pixels
+
                 float finalX = x;
                 if (finalAlign == Paint.Align.LEFT) {
-                    finalX = marginLeft;
-                } else if (finalAlign == Paint.Align.CENTER) {
-                    finalX = width / 2f;
+                    finalX = marginLeft + safeMargin; // Empurra um pouquinho para a direita
                 } else if (finalAlign == Paint.Align.RIGHT) {
-                    finalX = width - marginRight;
+                    finalX = width - marginRight - safeMargin; // Empurra um pouquinho para a esquerda
+                } else {
+                    finalX = width / 2f;
                 }
 
                 canvas.drawText(finalText, finalX, baseline, paint);
+
             }
         };
 
