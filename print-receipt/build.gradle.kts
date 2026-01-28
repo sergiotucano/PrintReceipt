@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "br.com.mbd.print_receipt"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 22
