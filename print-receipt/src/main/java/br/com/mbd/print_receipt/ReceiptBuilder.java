@@ -122,39 +122,52 @@ public class ReceiptBuilder {
 
             @Override
             public void drawOnCanvas(Canvas canvas, float x, float y) {
-
                 Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
                 paint.setTextSize(finalTextSize);
-                paint.setColor(finalColor);
                 paint.setTextAlign(finalAlign);
 
                 if (finalTypeface != null) {
                     paint.setTypeface(finalTypeface);
                 }
 
+                // Identifica a altura total reservada para esta linha
+                int itemHeight = getHeight();
                 Paint.FontMetrics fm = paint.getFontMetrics();
 
-                float padding = 6f;
-                float top = y + fm.top - padding;
-                float bottom = y + fm.bottom + padding;
-
-                // ✅ FUNDO DA LINHA INTEIRA
+                // ✅ 1. DESENHAR O FUNDO PRIMEIRO
                 if (finalBackground != Color.WHITE) {
                     Paint bg = new Paint();
                     bg.setStyle(Paint.Style.FILL);
                     bg.setColor(finalBackground);
-
-                    canvas.drawRect(
-                            0,
-                            top,
-                            finalWidth,
-                            bottom,
-                            bg
-                    );
+                    // O fundo começa em 'y' e vai até 'y + itemHeight'
+                    // Usamos 'width' (largura total) para a tarja cobrir o papel todo
+                    canvas.drawRect(0, y, width, y + itemHeight, bg);
                 }
 
-                float textY = y - fm.top;
-                canvas.drawText(finalText, x, textY, paint);
+                // ✅ 2. DEFINIR COR DO TEXTO (Contraste)
+                // Se o fundo for escuro, o texto precisa ser branco
+                if (finalBackground == Color.BLACK) {
+                    paint.setColor(Color.WHITE);
+                } else {
+                    paint.setColor(finalColor);
+                }
+
+                // ✅ 3. CALCULAR A BASELINE (Onde o texto "senta")
+                // Centraliza o texto verticalmente dentro do itemHeight
+                float centerY = y + (itemHeight / 2f);
+                float baseline = centerY - (fm.ascent + fm.descent) / 2f;
+
+                // ✅ 4. CALCULAR O X (Alinhamento Horizontal)
+                float finalX = x;
+                if (finalAlign == Paint.Align.LEFT) {
+                    finalX = marginLeft;
+                } else if (finalAlign == Paint.Align.CENTER) {
+                    finalX = width / 2f;
+                } else if (finalAlign == Paint.Align.RIGHT) {
+                    finalX = width - marginRight;
+                }
+
+                canvas.drawText(finalText, finalX, baseline, paint);
             }
         };
 
