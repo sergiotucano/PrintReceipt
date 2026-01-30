@@ -56,7 +56,7 @@ afterEvaluate {
 
                 groupId = "com.github.sergiotucano"
                 artifactId = "print-receipt"
-                version = "1.0.0"
+                version = "1.0.1"
             }
         }
     }
